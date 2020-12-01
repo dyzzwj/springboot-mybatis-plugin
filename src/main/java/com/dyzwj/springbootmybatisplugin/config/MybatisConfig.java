@@ -1,6 +1,8 @@
 package com.dyzwj.springbootmybatisplugin.config;
 
 import com.dyzwj.springbootmybatisplugin.plugin.MyPlugin;
+import com.dyzwj.springbootmybatisplugin.plugin.PageInterceptor;
+import com.dyzwj.springbootmybatisplugin.util.Pageable;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -44,7 +46,7 @@ public class MybatisConfig {
 //    }
 
     @Bean
-    public MyPlugin plugin(){
-        return new MyPlugin(".*Page$");
+    public PageInterceptor plugin(){
+        return new PageInterceptor();
     }
 }

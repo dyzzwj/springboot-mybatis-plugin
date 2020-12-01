@@ -3,6 +3,7 @@ package com.dyzwj.springbootmybatisplugin;
 import com.dyzwj.springbootmybatisplugin.mapper.UserMapper;
 import com.dyzwj.springbootmybatisplugin.po.User;
 import com.dyzwj.springbootmybatisplugin.util.MyPage;
+import com.dyzwj.springbootmybatisplugin.util.Pageable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.shadow.com.univocity.parsers.common.processor.ObjectRowListProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,9 @@ class SpringbootMybatisPluginApplicationTests {
     @Test
     public void test1() {
         Map<String, Object> param = new HashMap<>();
-        param.put("page", new MyPage(2, 10));
+        Pageable pageable = new Pageable();
+        pageable.setPage(3);
+        param.put("page", pageable);
         userMapper.selectAllByPage(param).forEach(System.out::println);
         System.out.println(param.get("page"));
     }

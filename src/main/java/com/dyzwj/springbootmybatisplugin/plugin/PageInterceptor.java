@@ -4,10 +4,7 @@ import com.dyzwj.springbootmybatisplugin.util.Pageable;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.plugin.Intercepts;
-import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
@@ -43,6 +40,7 @@ public class PageInterceptor implements Interceptor {
             setPageTotal(connection, boundSql, pageable, parameterHandler);
             //设置分页sql语句
             setSqlStatement(pageable, boundSql);
+
         });
 
         //执行拦截的方法 并返回
@@ -58,16 +56,17 @@ public class PageInterceptor implements Interceptor {
     public Object plugin(Object target) {
         if(target instanceof StatementHandler){
             if (getPageable((StatementHandler)target) != null){
-
+                return Plugin.wrap(target,this);
             }
         }
-        return null;
+        return target;
     }
 
     private void setSqlStatement(Pageable pageable, BoundSql boundSql) {
         int start = (pageable.getPage() - 1) * pageable.getSize();
         int size = pageable.getSize();
-        String pageSql = boundSql.getSql() + "limit " + start + "," + size;
+        String pageSql = boundSql.getSql() + " limit " + start + "," + size;
+        System.out.println(pageSql);
         MetaObject metaObject =
                 MetaObject.forObject(boundSql, SystemMetaObject.DEFAULT_OBJECT_FACTORY,
                         SystemMetaObject.DEFAULT_OBJECT_WRAPPER_FACTORY, new DefaultReflectorFactory());
@@ -102,6 +101,7 @@ public class PageInterceptor implements Interceptor {
 
     private void setPageTotal(Connection connection, BoundSql boundSql, Pageable pageable, ParameterHandler parameterHandler) {
         String countSql = convertToCountSql(boundSql.getSql());
+        System.out.println(countSql);
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
