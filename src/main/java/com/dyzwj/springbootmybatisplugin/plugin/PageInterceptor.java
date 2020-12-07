@@ -49,14 +49,15 @@ public class PageInterceptor implements Interceptor {
 
     /**
      * 设置哪些Mybatis对象需要被该插件拦截
+     *
      * @param target
      * @return
      */
     @Override
     public Object plugin(Object target) {
-        if(target instanceof StatementHandler){
-            if (getPageable((StatementHandler)target) != null){
-                return Plugin.wrap(target,this);
+        if (target instanceof StatementHandler) {
+            if (getPageable((StatementHandler) target) != null) {
+                return Plugin.wrap(target, this);
             }
         }
         return target;
